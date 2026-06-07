@@ -13,6 +13,7 @@ function App() {
       const data = await fetchNotifications(1, 10, type);
 
       setNotifications(data);
+      setCurrentIndex(0);
 
       await Log(
         "frontend",
@@ -32,8 +33,6 @@ function App() {
 
   useEffect(() => {
     loadNotifications();
-
-    // eslint-disable-next-line
   }, [type]);
 
   const nextNotification = () => {
@@ -48,11 +47,19 @@ function App() {
     }
   };
 
+  if (notifications.length === 0) {
+    return (
+      <div className="app">
+        <h2>Loading Notifications...</h2>
+      </div>
+    );
+  }
+
   const current = notifications[currentIndex];
 
   return (
     <div className="app">
-      <h1>Campus Notifications</h1>
+      <h1>Campus Notification System</h1>
 
       <div className="filters">
         <button onClick={() => setType("")}>
@@ -72,20 +79,16 @@ function App() {
         </button>
       </div>
 
-      <div className="priority-box">
-        <h2>Notification Viewer</h2>
+      <div className="card">
+        <h2>{current.Message}</h2>
 
-        {current && (
-          <div className="card">
-            <h3>{current.Message}</h3>
+        <p>
+          <strong>Type:</strong> {current.Type}
+        </p>
 
-            <p>
-              <strong>Type:</strong> {current.Type}
-            </p>
-
-            <small>{current.Timestamp}</small>
-          </div>
-        )}
+        <p>
+          <strong>Date:</strong> {current.Timestamp}
+        </p>
       </div>
 
       <div className="pagination">
@@ -93,7 +96,7 @@ function App() {
           disabled={currentIndex === 0}
           onClick={prevNotification}
         >
-          Prev
+          Previous
         </button>
 
         <button
